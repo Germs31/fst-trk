@@ -16,12 +16,14 @@
     "@mui/material": "^7.3.4",
     "@prisma/client": "^6.17.1",
     "bcrypt": "^6.0.0",
+    "konva": "^10.0.2",
     "next": "15.5.4",
     "next-auth": "^4.24.11",
     "pdf-lib": "^1.17.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.65.0",
+    "react-konva": "^19.0.10",
     "zod": "^4.1.12"
   },
   "devDependencies": {

@@ -18,6 +18,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import GenerateBidPdf from "@/components/GenerateBidPdf"; // your PDF component
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from '@mui/icons-material/Visibility'; 
 import { useRouter } from "next/navigation";
 
 type Bid = {
@@ -37,7 +38,7 @@ type Bid = {
 
 export default function BidsPage() {
   const router = useRouter();
-  
+
   const [bids, setBids] = useState<Bid[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -128,6 +129,13 @@ export default function BidsPage() {
                     onClick={() => handleDelete(bid.id)}
                   >
                     <DeleteIcon />
+                  </IconButton>
+                  <IconButton
+                    color="secondary"
+                    onClick={() =>
+                      router.push(`/dashboard/bids/${bid.id}`)
+                    }>
+                    <VisibilityIcon />
                   </IconButton>
                 </TableCell>
               </TableRow>
