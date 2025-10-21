@@ -1,0 +1,121 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users   User[]
+  clients Client[]
+  bids    Bid[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company  @relation(fields: [companyId], references: [id])
+  clients Client[] // e.g., user-created clients
+  bids    Bid[]
+  Note    Note[]
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  companyId String
+  userId    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id])
+  user    User?   @relation(fields: [userId], references: [id])
+  bids    Bid[]
+  notes   Note[]
+}
+
+model Bid {
+  id            String    @id @default(cuid())
+  title         String
+  description   String?
+  amount        Float?
+  status        BidStatus @default(PENDING)
+  customerName  String
+  customerEmail String?
+  customerPhone String?
+  address       String?
+  clientId      String? // optional — can link later if client accepts
+  companyId     String
+  userId        String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  company Company   @relation(fields: [companyId], references: [id])
+  user    User      @relation(fields: [userId], references: [id])
+  client  Client?   @relation(fields: [clientId], references: [id])
+  notes   Note[]
+  BidItem BidItem[]
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  content   String
+  clientId  String?
+  bidId     String?
+  userId    String
+  createdAt DateTime @default(now())
+
+  client Client? @relation(fields: [clientId], references: [id])
+  bid    Bid?    @relation(fields: [bidId], references: [id])
+  user   User    @relation(fields: [userId], references: [id])
+}
+
+model BidItem {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  quantity    Int
+  unitPrice   Float
+  type        ItemType // MATERIAL or LABOR
+  bidId       String
+  createdAt   DateTime @default(now())
+
+  bid Bid @relation(fields: [bidId], references: [id])
+}
+
+enum ItemType {
+  MATERIAL
+  LABOR
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  USER
+}
+
+enum BidStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+}
