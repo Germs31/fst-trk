@@ -28,6 +28,9 @@ export default function Sidebar({ mobileOpen, onDrawerToggle }: SidebarProps) {
         <ListItem  component={Link} href="/dashboard/bids">
           <ListItemText primary="Bids" />
         </ListItem>
+        <ListItem  component={Link} href="/dashboard/tools/square-foot-calc">
+          <ListItemText primary="Sqft Calc" />
+        </ListItem>
       </List>
     </div>
   );

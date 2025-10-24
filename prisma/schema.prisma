@@ -102,6 +102,117 @@ model BidItem {
   bid Bid @relation(fields: [bidId], references: [id])
 }
 
+model Job {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      JobStatus  @default(PLANNING)
+  startDate   DateTime?
+  endDate     DateTime?
+  bidId       String
+  clientId    String
+  companyId   String
+  userId      String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  bid       Bid       @relation(fields: [bidId], references: [id])
+  client    Client    @relation(fields: [clientId], references: [id])
+  company   Company   @relation(fields: [companyId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+  materials Material[]
+  receipts  Receipt[]
+  permits   Permit[]
+  timeline  Timeline[]
+}
+
+model Material {
+  id        String   @id @default(cuid())
+  name      String
+  quantity  Int
+  cost      Float
+  supplier  String?
+  jobId     String
+  createdAt DateTime @default(now())
+
+  job Job @relation(fields: [jobId], references: [id])
+}
+
+model Receipt {
+  id          String   @id @default(cuid())
+  description String?
+  amount      Float
+  date        DateTime @default(now())
+  attachment  String?  // optional Cloudinary URL or file path
+  jobId       String
+  createdAt   DateTime @default(now())
+
+  job Job @relation(fields: [jobId], references: [id])
+}
+
+model Permit {
+  id          String       @id @default(cuid())
+  type        String
+  issuedDate  DateTime?
+  expiryDate  DateTime?
+  status      PermitStatus @default(PENDING)
+  attachment  String?
+  jobId       String
+  createdAt   DateTime @default(now())
+
+  job Job @relation(fields: [jobId], references: [id])
+}
+
+model Timeline {
+  id        String   @id @default(cuid())
+  title     String
+  date      DateTime
+  notes     String?
+  jobId     String
+  createdAt DateTime @default(now())
+
+  job Job @relation(fields: [jobId], references: [id])
+}
+
+model CompanyExpense {
+  id          String           @id @default(cuid())
+  title       String
+  category    ExpenseCategory
+  amount      Float
+  date        DateTime         @default(now())
+  description String?
+  attachment  String?
+  companyId   String
+  createdAt   DateTime         @default(now())
+
+  company Company @relation(fields: [companyId], references: [id])
+}
+
+enum ExpenseCategory {
+  INSURANCE
+  LICENSE
+  EQUIPMENT
+  PAYROLL
+  MARKETING
+  UTILITIES
+  OTHER
+}
+
+enum PermitStatus {
+  PENDING
+  APPROVED
+  EXPIRED
+}
+
+enum JobStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+
 enum ItemType {
   MATERIAL
   LABOR
